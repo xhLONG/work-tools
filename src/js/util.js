@@ -116,7 +116,23 @@ const Util = {
         input.select();
         document.execCommand('copy');
         document.body.removeChild(input);
-    }
+    },
+
+    // 节流
+    throttle: function(fn, delay) {
+        var timer = null;
+        return function () {
+            var context = this;
+            var args = arguments;
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function () {
+                fn.apply(context, args);
+            }, delay);
+        }
+    },
+
 };
 
 
