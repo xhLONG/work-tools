@@ -1,9 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { Message } from "element-ui";
-import { jumpLogin, downloadFile } from "@/utils";
-import { Loading } from "element-ui";
-import { ElLoadingComponent } from "element-ui/types/loading";
-// import vm from "@/main";
+import { downloadFile } from "./downloadFile";
+// import { Loading } from "element-ui";
+// import { ElLoadingComponent } from "element-ui/types/loading";
+import vm from "@/main";
 
 let loadingInstance = null;
 let requestNum = 0;
@@ -19,15 +19,22 @@ const addLoading = () => {
     }
 };
 
-const cancelLoading = () => {
+export const cancelLoading = () => {
     // 取消loading 如果pending请求数量等于0，关闭loading
     requestNum--;
     if (requestNum === 0) loadingInstance?.close();
 };
 
-export const createAxiosByinterceptors = (
-    config
-) => {
+/**
+ *   跳转登录
+ */
+ const jumpLogin = () => {
+    vm.$Cookies.remove("vue_admin_token");
+    vm.$router.push(`/login?redirect=${encodeURIComponent(vm.$route.fullPath)}`);
+};
+
+
+export const createAxiosByinterceptors = ( config ) => {
     const instance = axios.create({
         timeout: 1000,    //超时配置
         withCredentials: true,  //跨域携带cookie
@@ -39,7 +46,6 @@ export const createAxiosByinterceptors = (
         function (config) {
             // 在发送请求之前做些什么
             const { loading = true } = config;
-            console.log("config:", config);
             // config.headers.Authorization = vm.$Cookies.get("vue_admin_token");
             if (loading) addLoading();
             return config;
@@ -54,16 +60,16 @@ export const createAxiosByinterceptors = (
     instance.interceptors.response.use(
         function (response) {
             // 对响应数据做点什么
-            console.log("response:", response);
             const { loading = true } = response.config;
             if (loading) cancelLoading();
-            const { code, data, message } = response.data;
+            const { code, message } = response.data;
             // config设置responseType为blob 处理文件下载
             if (response.data instanceof Blob) {
                 return downloadFile(response);
             } else {
-                if (code === 200) return data;
-                else if (code === 401) {
+                if (code == 200 || !code) {
+                    return response.data || response;
+                } else if (code == 401) {
                     jumpLogin();
                 } else {
                     Message.error(message);
@@ -73,9 +79,7 @@ export const createAxiosByinterceptors = (
         },
         function (error) {
             // 对响应错误做点什么
-            console.log("error-response:", error.response);
-            console.log("error-config:", error.config);
-            console.log("error-request:", error.request);
+            // console.log("error-response:", error.response);
             const { loading = true } = error.config;
             if (loading) cancelLoading();
             if (error.response) {

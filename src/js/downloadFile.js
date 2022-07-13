@@ -1,16 +1,6 @@
-src / utils / index.ts
-
 import { Message } from "element-ui";
 import { AxiosResponse } from "axios";
 import vm from "@/main";
-
-/**
- *   跳转登录
- */
-export const jumpLogin = () => {
-    vm.$Cookies.remove("vue_admin_token");
-    vm.$router.push(`/login?redirect=${encodeURIComponent(vm.$route.fullPath)}`);
-};
 
 /**
  * 下载文件
