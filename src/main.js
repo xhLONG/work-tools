@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import { createAxiosByinterceptors } from './js/request'
 import installElementPlugin from './config/elementComponets.js'
+import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.config.productionTip = false
 
@@ -29,6 +30,13 @@ Vue.use((Vue) => {
 })
 
 Vue.use(installElementPlugin)
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyAjIpt5oXhnhwDYxU0RicstS6GaZXf-Fpg',
+    libraries: 'places'
+  }
+})
 
 new Vue({
     router,
