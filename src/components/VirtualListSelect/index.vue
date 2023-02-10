@@ -4,6 +4,8 @@
     :placeholder="placeholder"
     :clearable="clearable"
     :filterable="filterable"
+    :disabled="disabled"
+    :size="size"
     :filter-method="filterMethod"
     @visible-change="handleVisibleChange"
     ref="select"
@@ -25,6 +27,7 @@ import virtualList from 'vue-virtual-scroll-list';
 import optionComponent from './optionComponent';
 import { Form, FormItem, Select } from 'element-ui';
 import Vue from 'vue';
+import { nextTick } from 'process';
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Select)
@@ -73,6 +76,14 @@ export default {
     filterable: {
       type: Boolean,
       default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    size: {
+      type: String,
+      default: 'small'
     }
     /* el-select 参数 end */
   },
@@ -100,7 +111,7 @@ export default {
     dataSourcesRes() {
       if (this.filterVal) {
         return this.dataSources.filter(item => {
-          return item[this.extraProps.label].includes(this.filterVal)
+          return item[this.extraProps.label].toLowerCase().includes(this.filterVal.toLowerCase())
         })
       }
       return this.dataSources
@@ -119,7 +130,15 @@ export default {
     },
     filterMethod(val) {
       this.filterVal = val.trim()
-    }
+      nextTick(() => {
+        const select = this.$refs.select;
+        const child = select.$children;
+        const [, selectDrop] = child;
+        const [cchild] = selectDrop.$children;
+        const [a] = cchild.$children;
+        a.$el.scrollTo(0, 0)
+      })
+    },
   },
 };
 </script>

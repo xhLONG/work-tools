@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VirtualListSelect v-model="virtualListSelectVal" :dataSources="virtualListSelectData" :filterable="true"></VirtualListSelect>
+    <VirtualListSelect v-model="virtualListSelectVal" :dataSources="virtualListSelectData" :filterable="false"></VirtualListSelect>
   </div>
 </template>
 
