@@ -17,6 +17,7 @@
       :keeps="keeps"
       :extra-props="extraProps"
       :style="virtualListStyle"
+      ref="virtualList"
     >
     </virtual-list>
   </el-select>
@@ -25,11 +26,8 @@
 <script>
 import virtualList from 'vue-virtual-scroll-list';
 import optionComponent from './optionComponent';
-import { Form, FormItem, Select } from 'element-ui';
+import { Select } from 'element-ui';
 import Vue from 'vue';
-import { nextTick } from 'process';
-Vue.use(Form)
-Vue.use(FormItem)
 Vue.use(Select)
 
 export default {
@@ -65,7 +63,7 @@ export default {
     },
     keeps: {
       type: Number,
-      default: 10
+      default: 30
     },
     /* virtual-list 参数 end */
     /* el-select 参数 start */
@@ -118,25 +116,18 @@ export default {
     }
   },
   methods: {
-    handleVisibleChange() {
-      this.filterVal = '';
-      const select = this.$refs.select;
-      const child = select.$children;
-      const [, selectDrop] = child;
-      const [cchild] = selectDrop.$children;
-      const [a] = cchild.$children;
-      const [group] = a.$el.children;
-      group.style.paddingTop = '0px';
+    handleVisibleChange(isVisible) {
+      if (!isVisible) {
+        this.filterVal = '';
+        this.$nextTick(() => {
+          this.$refs.virtualList.reset();
+        })
+      }
     },
     filterMethod(val) {
       this.filterVal = val.trim()
-      nextTick(() => {
-        const select = this.$refs.select;
-        const child = select.$children;
-        const [, selectDrop] = child;
-        const [cchild] = selectDrop.$children;
-        const [a] = cchild.$children;
-        a.$el.scrollTo(0, 0)
+      this.$nextTick(() => {
+        this.$refs.virtualList.reset();
       })
     },
   },
