@@ -22,7 +22,6 @@ export default {
             // https://api.ixiaowai.cn/api/api.php?return=json
             const that = this;
             // this.$request.get('/test-api/api/api.php?return=json').then(response => {
-            //     console.log('getData', response);
             //     that.imgIcon = response;
             // });
             this.$request.get('/test-api/api/ylapi.php').then(response => {

@@ -79,7 +79,6 @@ export const createAxiosByinterceptors = ( config ) => {
         },
         function (error) {
             // 对响应错误做点什么
-            // console.log("error-response:", error.response);
             const { loading = true } = error.config;
             if (loading) cancelLoading();
             if (error.response) {

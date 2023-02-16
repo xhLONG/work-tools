@@ -5,6 +5,8 @@ import store from './store'
 import { createAxiosByinterceptors } from './js/request'
 import installElementPlugin from './config/elementComponets.js'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import 'normalize.css' // A modern alternative to CSS resets
+import '@/icons' // icon
 
 Vue.config.productionTip = false
 
